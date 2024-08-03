@@ -91,7 +91,7 @@ int main(void)
 	
 	dijkstra();
 
-	if (dist[n][3] >= 1e9 + 7) {
+	if (dist[n][3] == 1e9 + 7) {
 		cout << -1 << "\n";
 	}
 	else {
