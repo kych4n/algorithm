@@ -6,9 +6,9 @@ using namespace std;
 
 int tc, n, m, w, s, e, t;
 vector<vector<int>> edges;
+vector<long long> dist(501);
 
 bool bf(int start) {
-	vector<long long> dist(501);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < 2 * m + w; j++) {
 			int cur_node = edges[j][0];
