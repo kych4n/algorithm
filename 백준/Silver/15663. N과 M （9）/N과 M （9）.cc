@@ -13,8 +13,10 @@ void bt(int count) {
 	if (count == m) {
 		result.push_back(temp);
 	}
+	int same_level_last = 0;
 	for (int i = 0; i < n; i++) {
-		if (!visited[i]) {
+		if (!visited[i] && same_level_last != number[i]) {
+			same_level_last = number[i];
 			visited[i] = true;
 			temp.push_back(number[i]);
 			bt(count + 1);
