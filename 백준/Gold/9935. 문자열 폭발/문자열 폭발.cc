@@ -29,7 +29,7 @@ int main(void)
 					cur_idx = 0;
 				}
 				else {
-					cur_idx = min(save[s.top().second] + 1, boom_length - 1);
+					cur_idx = save[s.top().second] + 1;
 				}
 				
 			}
