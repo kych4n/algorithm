@@ -5,34 +5,30 @@
 using namespace std;
 
 int t, n;
-vector<int> prices(1000000);
+vector<int> stock(1000000);
 
 int main(void)
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 	cin >> t;
-	for (int i = 0; i < t; i++) {
-		cin >> n;
-		priority_queue<pair<int, int>> pq;
+
+	for (int u = 1; u <= t; u++) {
 		long long result = 0;
-		for (int j = 0; j < n; j++) {
-			cin >> prices[j];
-			pq.push({ prices[j], j });
+		cin >> n;
+		for (int i = 0; i < n; i++) {
+			cin >> stock[i];
 		}
 
-		int max_value;
-		for (int j = 0; j < n; j++) {
-			while (pq.top().second < j) {
-				pq.pop();
-			}
-			max_value = pq.top().first;
-			if (max_value > prices[j]) {
-				result += (max_value - prices[j]);
-			}
+		int max_value = stock[n - 1];
+		for (int i = n - 2; i >= 0; i--) {
+			max_value = max(max_value, stock[i]);
+			if (max_value > stock[i]) {
+				result += max_value - stock[i];
+			}	
 		}
+
 		cout << result << "\n";
 	}
-
 	return 0;
 }
