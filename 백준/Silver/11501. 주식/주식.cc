@@ -23,9 +23,7 @@ int main(void)
 		int max_value = stock[n - 1];
 		for (int i = n - 2; i >= 0; i--) {
 			max_value = max(max_value, stock[i]);
-			if (max_value > stock[i]) {
-				result += max_value - stock[i];
-			}	
+			result += max_value - stock[i];
 		}
 
 		cout << result << "\n";
