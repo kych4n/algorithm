@@ -4,8 +4,9 @@
 #include <algorithm>
 using namespace std;
 
-long long n, h, result = 0;
-stack<long long> s;
+int n, h;
+long long result = 0;
+stack<int> s;
 
 int main(void)
 {
