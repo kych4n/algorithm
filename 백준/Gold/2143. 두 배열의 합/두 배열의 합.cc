@@ -6,10 +6,10 @@ using namespace std;
 
 int t, n, m;
 vector<int> a(1000);
-vector<long long> aSum(1000);
+vector<int> aSum(1000);
 vector<int> b(1000);
-vector<long long> bSum(1000);
-map<int, long long> aMap;
+vector<int> bSum(1000);
+map<int, int> aMap;
 long long result = 0;
 
 int main(void)
@@ -40,13 +40,13 @@ int main(void)
 	}
 
 	for (int i = 0; i < n; i++) {
-        if (aMap.find(aSum[i]) != aMap.end()) {
-				aMap[aSum[i]] += 1;
-			}
-			else {
-				aMap.insert({ aSum[i] , 1 });
-			}
-   
+		if (aMap.find(aSum[i]) != aMap.end()) {
+			aMap[aSum[i]] += 1;
+		}
+		else {
+			aMap.insert({ aSum[i] , 1 });
+		}
+
 		for (int j = 0; j < i; j++) {
 			long long part_sum = aSum[i] - aSum[j];
 			if (aMap.find(aSum[i] - aSum[j]) != aMap.end()) {
@@ -57,7 +57,7 @@ int main(void)
 			}
 		}
 	}
-	
+
 	for (int i = 0; i < m; i++) {
 		if (aMap.find(t - bSum[i]) != aMap.end()) {
 			result += aMap[t - bSum[i]];
