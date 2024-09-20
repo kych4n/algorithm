@@ -4,12 +4,12 @@
 #include <algorithm>
 using namespace std;
 
-int t, n, m;
+int t, n, m, part_sum;
 vector<int> a(1000);
 vector<int> aSum(1000);
 vector<int> b(1000);
 vector<int> bSum(1000);
-map<int, int> aMap;
+vector<int> partSumA;
 long long result = 0;
 
 int main(void)
@@ -40,33 +40,19 @@ int main(void)
 	}
 
 	for (int i = 0; i < n; i++) {
-		if (aMap.find(aSum[i]) != aMap.end()) {
-			aMap[aSum[i]] += 1;
-		}
-		else {
-			aMap.insert({ aSum[i] , 1 });
-		}
-
+		partSumA.push_back(aSum[i]);
 		for (int j = 0; j < i; j++) {
-			long long part_sum = aSum[i] - aSum[j];
-			if (aMap.find(aSum[i] - aSum[j]) != aMap.end()) {
-				aMap[part_sum] += 1;
-			}
-			else {
-				aMap.insert({ part_sum, 1 });
-			}
+			partSumA.push_back(aSum[i] - aSum[j]);
 		}
 	}
 
+	sort(partSumA.begin(), partSumA.end());
+
 	for (int i = 0; i < m; i++) {
-		if (aMap.find(t - bSum[i]) != aMap.end()) {
-			result += aMap[t - bSum[i]];
-		}
+		result += upper_bound(partSumA.begin(), partSumA.end(), t - bSum[i]) -lower_bound(partSumA.begin(), partSumA.end(), t - bSum[i]);
 		for (int j = 0; j < i; j++) {
-			long long part_sum = bSum[i] - bSum[j];
-			if (aMap.find(t - part_sum) != aMap.end()) {
-				result += aMap[t - part_sum];
-			}
+			part_sum = bSum[i] - bSum[j];
+			result += upper_bound(partSumA.begin(), partSumA.end(), t - part_sum) - lower_bound(partSumA.begin(), partSumA.end(), t - part_sum);
 		}
 	}
 
