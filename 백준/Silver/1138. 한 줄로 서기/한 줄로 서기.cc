@@ -16,7 +16,7 @@ int main(void)
 	for (int i = 1; i <= n; i++) {
 		cin >> smaller;
 		for (int j = 0; j < n; j++) {
-			if (v[j] > i || v[j] == 0) {
+			if (v[j] == 0) {
 				smaller -= 1;
 			}
 			if (smaller == -1) {
