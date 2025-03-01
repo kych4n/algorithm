@@ -1,19 +1,20 @@
 #include <iostream>
-#include <queue>
+#include <vector>
 using namespace std;
-priority_queue<int, vector<int>, greater<int>> pq;
-int n, m;
 
-int main(void){
-	cin >> n;
-	for (int i=0; i<n; i++){
-		cin >> m;
-		pq.push(m);
-	}
+int n, number, MAX = 1e6;
+vector<bool> numbers(2*MAX+1);
 
-	while (!pq.empty()){
-		cout << pq.top() << "\n";
-		pq.pop();
-	}
-	return 0;
+int main() {
+    cin >> n;
+    for (int i=0; i<n; i++) {
+        cin >> number;
+        numbers[number+MAX] = true;
+    }
+    for (int i=0; i<numbers.size(); i++) {
+        if (numbers[i]) {
+            cout << i-MAX << "\n";
+        }
+    }
+    return 0;
 }
