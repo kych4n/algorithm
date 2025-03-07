@@ -18,14 +18,10 @@ int main() {
     cin >> m;
     for (int i = 0; i < m; i++) {
         cin >> target;
-        if (auto iter = lower_bound(A.begin(), A.end(), target); iter == A.end()) {
-            cout << 0 << "\n";
+        if (auto iter = lower_bound(A.begin(), A.end(), target); iter != A.end() && *iter == target) {
+            cout << 1 << "\n";
         } else {
-            if (*iter == target) {
-                cout << 1 << "\n";
-            } else {
-                cout << 0 << "\n";
-            }
+            cout << 0 << "\n";
         }
     }
     return 0;
