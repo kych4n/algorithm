@@ -1,23 +1,27 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
-int t, n;
-vector<pair<int, int>> dp(41, {0, 0});
+
+int t, n, MAX_VALUE = 40;
+vector<pair<int, int> > fibonacci(MAX_VALUE + 1);
+
+void solve() {
+    fibonacci[0].first = 1;
+    fibonacci[1].second = 1;
+    for (int i = 2; i <= MAX_VALUE; i++) {
+        fibonacci[i].first += (fibonacci[i - 2].first + fibonacci[i - 1].first);
+        fibonacci[i].second += (fibonacci[i - 2].second + fibonacci[i - 1].second);
+    }
+}
 
 int main() {
-	cin.tie(NULL);
-	ios_base::sync_with_stdio(false);
-	cin >> t;
-	dp[0].first = 1;
-	dp[1].second = 1;
-	for (int i=2; i<=40; i++){
-		dp[i].first = dp[i-1].first + dp[i-2].first;
-		dp[i].second = dp[i-1].second + dp[i-2].second;
-	}
-	for (int j=0; j<t; j++){
-		cin >> n;
-		cout << dp[n].first << " " << dp[n].second << "\n";
-	}
-	return 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    cin >> t;
+    for (int i = 0; i < t; i++) {
+        cin >> n;
+        cout << fibonacci[n].first << " " << fibonacci[n].second << "\n";
+    }
+    return 0;
 }
