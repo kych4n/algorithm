@@ -1,56 +1,66 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <algorithm>
-using namespace std;	
-int dx[] = {-1,1,0,0};
-int dy[] = {0,0,1,-1};
-int t, m, n, k, x, y;
+using namespace std;
 
-void bfs(int start_y, int start_x, vector<vector<int>>& farm){
-	queue<pair<int, int>> q;
-	farm[start_y][start_x] = 0;
-	q.push({start_y, start_x});
-	while (!q.empty()){
-		int cur_y = q.front().first;
-		int cur_x = q.front().second;
-		q.pop();
-		for (int i=0; i<4; i++){
-			int new_y = cur_y + dy[i];
-			int new_x = cur_x + dx[i];
-			if (!(new_x >= 0 && new_x < m && new_y >= 0 && new_y < n)){
-				continue;
-			}
-			if (farm[new_y][new_x] == 1){
-				farm[new_y][new_x] = 0;
-				q.push({new_y, new_x});
-			}
-		}
-	}
+int t, n, m, k, x, y;
+int dy[] = {-1, 1, 0, 0};
+int dx[] = {0, 0, 1, -1};
 
+vector<vector<int> > field(50, vector<int>(50));
+
+void eat_by_worm(int start_y, int start_x) {
+    queue<pair<int, int> > q;
+    q.push({start_y, start_x});
+    while (!q.empty()) {
+        int cur_y = q.front().first;
+        int cur_x = q.front().second;
+        q.pop();
+        for (int i = 0; i < 4; i++) {
+            int new_y = cur_y + dy[i];
+            int new_x = cur_x + dx[i];
+            if ((new_y >= 0 && new_y < n && new_x >= 0 && new_x < m) && field[new_y][new_x]) {
+                field[new_y][new_x] = 0;
+                q.push({new_y, new_x});
+            }
+        }
+    }
 }
 
+void set_init_field(int m, int n, int k) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            field[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < k; i++) {
+        cin >> x >> y;
+        field[y][x] = 1;
+    }
+}
+
+int get_worm_count() {
+    int worm_count = 0;
+    for (int start_y = 0; start_y < n; start_y++) {
+        for (int start_x = 0; start_x < m; start_x++) {
+            if (field[start_y][start_x]) {
+                worm_count += 1;
+                eat_by_worm(start_y, start_x);
+            }
+        }
+    }
+    return worm_count;
+}
+
+
 int main() {
-	cin.tie(NULL);
-	ios_base::sync_with_stdio(false);
-	cin >> t;
-	for (int q=0; q<t; q++){
-		cin >> m >> n >> k;
-		vector<vector<int>> farm(n, vector<int>(m));
-		int number_of_earthworm = 0;
-		for (int w=0; w<k; w++){
-			cin >> x >> y;
-			farm[y][x] = 1;
-		}
-		for (int i=0; i<n; i++){
-			for (int j=0; j<m; j++){
-				if (farm[i][j] == 1){
-					number_of_earthworm+=1;
-					bfs(i, j, farm);
-				}
-			}
-		}
-		cout << number_of_earthworm << "\n";
-	}
-	return 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >> t;
+    for (int i = 0; i < t; i++) {
+        cin >> m >> n >> k;
+        set_init_field(m, n, k);
+        cout << get_worm_count() << "\n";
+    }
+    return 0;
 }
