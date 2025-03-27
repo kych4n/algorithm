@@ -50,3 +50,7 @@
 
  <p>첫째 줄에 BOJ의 유저 중에서 케빈 베이컨의 수가 가장 작은 사람을 출력한다. 그런 사람이 여러 명일 경우에는 번호가 가장 작은 사람을 출력한다.</p>
 
+### 설계
+<p>BFS를 사용하기로 결정하고, dist[start][other] + dist[other][otherFriend] < dist[start][otherFriend]와 같은 식을 세웠으나 인접 노드를 탐색하는 BFS에서 이는 올바르지 않다.</p>
+<p>대신, dist[start][other] + 1 < dist[start][otherFriend]로 수정한다.</p>
+<p>또한, 함수를 만들어 일차원 배열에 거리를 저장한다.</p>
