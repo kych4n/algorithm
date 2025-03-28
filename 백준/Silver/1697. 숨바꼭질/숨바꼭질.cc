@@ -1,48 +1,57 @@
 #include <iostream>
-#include <vector>
 #include <queue>
-#include <algorithm>
-#include <cmath>
-using namespace std;	
-int n, k, sec=0;
-vector<int> visited(100001, 1e9+7);
+using namespace std;
+
+int n, k, MAX_LOCATION = 100000, MIN_LOCATION = 0, MAX_VALUE = 1e9 + 7;
+vector<int> minTime(MAX_LOCATION + 1, MAX_VALUE);
+
+int forward(int start) {
+    return start + 1;
+}
+
+int backward(int start) {
+    return start - 1;
+}
+
+int teleport(int start) {
+    return start * 2;
+}
+
+void solve(int start) {
+    int currentTime = 0;
+    minTime[start] = 0;
+    queue<int> q;
+    q.push(start);
+    while (!q.empty()) {
+        currentTime += 1;
+        int size = q.size();
+        for (int i = 0; i < size; i++) {
+            int current = q.front();
+            q.pop();
+            int forwardLocation = forward(current);
+            int backwardLocation = backward(current);
+            int teleportLocation = teleport(current);
+            if (forwardLocation <= MAX_LOCATION && currentTime < minTime[forwardLocation]) {
+                minTime[forwardLocation] = currentTime;
+                q.push(forwardLocation);
+            }
+            if (backwardLocation >= MIN_LOCATION && currentTime < minTime[backwardLocation]) {
+                minTime[backwardLocation] = currentTime;
+                q.push(backwardLocation);
+            }
+            if (teleportLocation <= MAX_LOCATION && currentTime < minTime[teleportLocation]) {
+                minTime[teleportLocation] = currentTime;
+                q.push(teleportLocation);
+            }
+        }
+    }
+}
 
 int main() {
-	cin.tie(NULL);
-	ios_base::sync_with_stdio(false);
-	cin >> n >> k;
-	if (n==k){
-		cout << 0 << "\n";
-		return 0;
-	}		
-	queue<int> q;
-	q.push(n);
-	while (!q.empty()){
-		sec+=1;
-		int size = q.size();
-		for (int i=0; i<size; i++){
-			int x = q.front();
-			q.pop();
-			if (x+1 <= 100000){
-				if (visited[x+1] > sec){
-					visited[x+1] = sec;
-					q.push(x+1);
-				}
-			} 
-			if (x-1 >= 0){
-				if (visited[x-1] > sec){
-					visited[x-1] = sec;
-					q.push(x-1);
-				}
-			} 
-			if (x*2 <= 100000){
-				if (visited[x*2] > sec){
-					visited[x*2] = sec;
-					q.push(x*2);
-				}
-			} 
-		}
-	}
-	cout << visited[k] << "\n";
-	return 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >> n >> k;
+    solve(n);
+    cout << minTime[k] << "\n";
+    return 0;
 }
