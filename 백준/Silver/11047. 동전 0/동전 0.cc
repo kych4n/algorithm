@@ -1,20 +1,32 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <queue>
 using namespace std;
-int n, k, result = 0;
-vector<int> coins(10);
+
+vector<int> coins;
+
+void getCoins(int n) {
+    int coin;
+    for (int i = 0; i < n; i++) {
+        cin >> coin;
+        coins.push_back(coin);
+    }
+}
+
+int solve(int n, int k) {
+    int count = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        count += k / coins[i];
+        k %= coins[i];
+    }
+    return count;
+}
 
 int main() {
-	cin >> n >> k;
-	for (int i=0; i<n; i++){
-		cin >> coins[i];
-	}
-	for (int i=n-1; i>=0; i--){
-		result += k / coins[i];
-		k %= coins[i];
-	}
-	cout << result << "\n";
-	return 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, k;
+    cin >> n >> k;
+    getCoins(n);
+    cout << solve(n, k) << "\n";
+    return 0;
 }
