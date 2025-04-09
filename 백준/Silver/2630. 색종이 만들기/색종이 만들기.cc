@@ -1,41 +1,44 @@
 #include <iostream>
-#include <cmath>
-#include <algorithm>
+#include <map>
+#include <vector>
+#include <queue>
 using namespace std;
-int n, white = 0, blue = 0;
-int paper[128][128];
 
-void make_result(int cur_x, int cur_y, int length) {
-	int color = paper[cur_x][cur_y];
-	for (int i = cur_x; i < cur_x+length; i++) {
-		for (int j = cur_y; j < cur_y+length; j++) {
-			if (color != paper[i][j]) {
-				make_result(cur_x, cur_y, length / 2);
-				make_result(cur_x, cur_y + length / 2, length / 2);
-				make_result(cur_x + length / 2, cur_y, length / 2);
-				make_result(cur_x + length / 2, cur_y + length / 2, length / 2);
-				return;
-			}
-		}
-	}
-	if (color == 1) {
-		blue += 1;
-	}
-	else if (color == 0) {
-		white += 1;
-	}
+int n, blue = 0, white = 0;
+
+vector<vector<int> > paper(128, vector<int>(128));
+
+void divideAndConcuer(int startY, int startX, int length) {
+    int color = paper[startY][startX];
+    for (int dy = 0; dy < length; dy++) {
+        for (int dx = 0; dx < length; dx++) {
+            if (color != paper[startY + dy][startX + dx]) {
+                int nextLength = length / 2;
+                divideAndConcuer(startY, startX, nextLength);
+                divideAndConcuer(startY + nextLength, startX, nextLength);
+                divideAndConcuer(startY, startX + nextLength, nextLength);
+                divideAndConcuer(startY + nextLength, startX + nextLength, nextLength);
+                return;
+            }
+        }
+    }
+    if (color) {
+        blue += 1;
+    } else {
+        white += 1;
+    }
 }
 
-int main(void) {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cin >> paper[i][j];
-		}
-	}
-	make_result(0, 0, n);
-	cout << white << "\n" << blue << "\n";
-	return 0;
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> paper[i][j];
+        }
+    }
+    divideAndConcuer(0, 0, n);
+    cout << white << "\n" << blue;
+    return 0;
 }
