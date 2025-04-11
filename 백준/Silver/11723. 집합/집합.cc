@@ -1,47 +1,37 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
-int m, x;
-string oper;
-vector<int> set(21);
+vector<int> s(21);
 
-int main(void)
-{	
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-    cin >> m;
-    for (int i = 0; i < m; i++) {
-        cin >> oper;
-        if (oper == "add") {
-            cin >> x;
-            set[x] = 1;
-        }
-        else if (oper == "remove") {
-            cin >> x;
-            set[x] = 0;
-        }
-        else if (oper == "check") {
-            cin >> x;
-            cout << set[x] << "\n";
-        }
-        else if (oper == "toggle") {
-            cin >> x;
-            set[x] = (set[x] == 1 ? 0 : 1);
-        }
-        else if (oper == "all") {
-            for (int j = 1; j <= 20; j++) {
-                set[j] = 1;
-            }
-        }
-        else if (oper == "empty") {
-            for (int j = 1; j <= 20; j++) {
-                set[j] = 0;
-            }
-        }
+void solve(string command, int x) {
+    if (command == "add") {
+        s[x] = 1;
+    } else if (command == "remove") {
+        s[x] = 0;
+    } else if (command == "check") {
+        cout << s[x] << "\n";
+    } else if (command == "toggle") {
+        s[x] = abs(1 - s[x]);
+    } else if (command == "all") {
+        s = vector<int>(21, 1);
+    } else if (command == "empty") {
+        s = vector<int>(21, 0);
     }
-	
-	return 0;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    string command;
+    int n, x = 0;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> command;
+        if (command != "all" && command != "empty") {
+            cin >> x;
+        }
+        solve(command, x);
+    }
+    return 0;
 }
