@@ -1,32 +1,24 @@
 #include <iostream>
 #include <vector>
-#include <set>
 #include <algorithm>
+#include <map>
+#include <set>
 using namespace std;
 
-int n;
+map<char, int> game_to_count = { {'Y', 2}, {'F', 3}, {'O',4} };
+set<string> people;
+string name;
 char game;
-string player;
-set<string> s;
+int n;
 
-int main(void)
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
+int main(void) {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
 	cin >> n >> game;
 	for (int i = 0; i < n; i++) {
-		cin >> player;
-		s.insert(player);
+		cin >> name;
+		people.insert(name);
 	}
-	
-	if (game == 'Y') {
-		cout << s.size() << "\n";
-	}
-	else if (game == 'F') {
-		cout << s.size() / 2<< "\n";
-	}
-	else if (game == 'O') {
-		cout << s.size() / 3 << "\n";
-	}
+	cout << people.size() / (game_to_count[game] - 1) << "\n";
 	return 0;
 }
