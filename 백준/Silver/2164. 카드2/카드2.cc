@@ -1,29 +1,23 @@
 #include <iostream>
-#include <queue>
+#include <deque>
+#include <algorithm>
 using namespace std;
 
-int solve(int n) {
-    queue<int> cards;
-    bool need_push = false;
-    for (int i = 1; i <= n; i++) {
-        cards.push(i);
-    }
-    while (cards.size() > 1) {
-        if (need_push) {
-            cards.push(cards.front());
-        }
-        cards.pop();
-        need_push = !need_push;
-    }
-    return cards.front();
-}
+int n;
+deque<int> cards;
 
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    cout << solve(n) << "\n";
-
-    return 0;
+int main(void) {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cards.push_back(i);
+	}
+	while (cards.size() > 1) {
+		cards.pop_front();
+		cards.push_back(cards.front());
+		cards.pop_front();
+	}
+	cout << cards.front() << "\n";
+	return 0;
 }
