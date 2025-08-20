@@ -3,10 +3,10 @@
 #include <algorithm>
 using namespace std;
 
-int n, x, min_price = 1e9 + 7;
-long long result;
-vector<int> demands;
-vector<int> prices;
+int n, x;
+size_t result, min_price = 1e9 + 7;
+vector<size_t> demands;
+vector<size_t> prices;
 
 int main(void) {
 	ios::sync_with_stdio(false);
