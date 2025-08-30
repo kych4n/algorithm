@@ -21,27 +21,21 @@ int main(void) {
 		targetAlphabetCount[words[0][i] - 'A'] += 1;
 	}
 	for (int i = 1; i < n; i++) {
-		vector<int> alphabetCount(26);
+		if (abs((int)(words[0].length() - words[i].length())) > 1) {
+			continue;
+		}
+		vector<int> alphabetCount = targetAlphabetCount;
 		for (int j = 0; j < words[i].length(); j++) {
-			alphabetCount[words[i][j] - 'A'] += 1;
+			alphabetCount[words[i][j] - 'A'] -= 1;
 		}
-		vector<int> problems;
+		int differenceCount = 0;
 		for (int j = 0; j < 26; j++) {
-			if (alphabetCount[j] != targetAlphabetCount[j]) {
-				problems.push_back(alphabetCount[j] - targetAlphabetCount[j]);
-			}
+			differenceCount += abs(alphabetCount[j]);
 		}
-		if (problems.empty()) {
+		if (differenceCount <= 2) {
 			result += 1;
 		}
-		else if (problems.size() == 1 && abs(problems[0]) == 1) {
-			result += 1;
-		}
-		else if (problems.size() == 2 && abs(problems[0]) == 1 && abs(problems[1]) == 1) {
-			if (problems[0] + problems[1] == 0) {
-				result += 1;
-			}
-		}
+		
 	}
 	cout << result << "\n";
 
