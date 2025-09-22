@@ -5,7 +5,6 @@
 using namespace std;
 
 int h, w;
-int left_idx, right_idx;
 int result = 0;
 vector<int> heights(500);
 
@@ -15,30 +14,15 @@ int main() {
         cin >> heights[i];
     }
     
-    left_idx = 0;
-    right_idx = 0;
-    while (true) {
-        int right_height = 0;
-        for (int i = left_idx + 1; i < w; i++) {
-            if (right_height <= heights[i]) {
-                right_height = heights[i];
-                right_idx = i;
-            }
-            if (right_height >= heights[left_idx]) {
-                break;
-            }
+    for (int i = 1; i < w - 1; i++) {
+        int left = 0, right = 0;
+        for (int j = 0; j < i; j++) {
+            left = max(left, heights[j]);
         }
-        if (left_idx == right_idx) {
-            right_idx = w - 1;
+        for (int j = i + 1; j < w; j++) {
+            right = max(right, heights[j]);
         }
-        int criteria_height = min(heights[left_idx], heights[right_idx]);
-        for (int i = left_idx + 1; i < right_idx; i++) {
-            result += criteria_height - heights[i];
-        }
-        left_idx = right_idx;
-        if (left_idx == w - 1) {
-            break;
-        }
+        result += max(min(left, right) - heights[i], 0);
     }
     cout << result << "\n";
     return 0;
