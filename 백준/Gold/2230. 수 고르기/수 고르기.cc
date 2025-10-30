@@ -31,13 +31,18 @@ int main() {
 
     init();
 
-    for (int i = 0; i < N; i++) {
-        auto it = lower_bound(A.begin(), A.end(), A[i] + M);
-        if (it != A.end()) {
-            int idx = it - A.begin();
-            result = min(result, A[idx] - A[i]);
+    int left = 0, right = 1;
+    while (left < N && right < N) {
+        long long difference = A[right] - A[left];
+        if (difference >= M) {
+            result = min(result, difference);
+            left++;
+        }
+        else if (difference < M) {
+            right++;
         }
     }
+
     cout << result << "\n";
 
     return 0;
