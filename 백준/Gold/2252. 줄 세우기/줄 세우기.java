@@ -40,15 +40,15 @@ public class Main {
             }
         }
 
-        for (int i=0; i<N; i++) {
-            for (int j=1; j<=N; j++) {
-                if (shorterCount[j] == 0) {
-                    bufferedWriter.write(j + " ");
-                    shorterCount[j] -= 1;
-                    numberToTaller.get(j).forEach(taller -> shorterCount[taller] -= 1);
-                    break;
+        while (!q.isEmpty()) {
+            int number = q.poll();
+            bufferedWriter.write(number + " ");
+            numberToTaller.get(number).forEach(taller -> {
+                shorterCount[taller] -= 1;
+                if (shorterCount[taller] == 0) {
+                    q.add(taller);
                 }
-            }
+            });
         }
 
         bufferedWriter.close();
