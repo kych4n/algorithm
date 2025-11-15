@@ -15,20 +15,20 @@ public class Main {
             tower[i] = Integer.parseInt(stringTokenizer.nextToken());
         }
 
-        Queue<Tower> pq = new PriorityQueue<>((t1, t2) -> t2.id - t1.id);
+        Stack<Tower> s = new Stack<>();
         for (int i=0; i<N; i++) {
             int height = tower[i];
-            while (!pq.isEmpty() && pq.peek().height < height) {
-                pq.poll();
+            while (!s.isEmpty() && s.peek().height < height) {
+                s.pop();
             }
-            if (!pq.isEmpty()) {
-                int receivedTower = pq.peek().id;
+            if (!s.isEmpty()) {
+                int receivedTower = s.peek().id;
                 bufferedWriter.write(receivedTower + " ");
             }
             else {
                 bufferedWriter.write(0 + " ");
             }
-            pq.add(new Tower(i+1, height));
+            s.add(new Tower(i+1, height));
         }
 
         bufferedWriter.close();
