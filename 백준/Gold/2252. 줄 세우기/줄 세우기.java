@@ -5,8 +5,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -15,34 +17,40 @@ public class Main {
         StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine());
         int N = Integer.parseInt(stringTokenizer.nextToken());
         int M = Integer.parseInt(stringTokenizer.nextToken());
+        int[] shorterCount = new int[N+1];
 
-        Map<Integer, Integer> numberToShorterCount = new HashMap<>();
         Map<Integer, List<Integer>> numberToTaller = new HashMap<>();
         for (int i=1; i<=N; i++) {
-            numberToShorterCount.put(i, 0);
             numberToTaller.put(i, new ArrayList<>());
         }
+
         for (int i=0; i<M; i++) {
             stringTokenizer = new StringTokenizer(bufferedReader.readLine());
             int front = Integer.parseInt(stringTokenizer.nextToken());
             int after = Integer.parseInt(stringTokenizer.nextToken());
-            numberToShorterCount.put(after, numberToShorterCount.getOrDefault(after, 0)+1);
+            shorterCount[after] += 1;
             numberToTaller.get(front).add(after);
         }
 
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
+        Queue<Integer> q = new LinkedList<>();
+        for (int i=1; i<=N; i++) {
+            if (shorterCount[i] == 0) {
+                q.add(i);
+            }
+        }
+
         for (int i=0; i<N; i++) {
-            for (Map.Entry<Integer, Integer> entry : numberToShorterCount.entrySet()) {
-                int number = entry.getKey();
-                int shortCount = entry.getValue();
-                if (shortCount == 0) {
-                    bufferedWriter.write(number + " ");
-                    numberToShorterCount.put(number, shortCount - 1);
-                    numberToTaller.get(number).forEach(taller -> numberToShorterCount.put(taller, numberToShorterCount.get(taller)-1));
+            for (int j=1; j<=N; j++) {
+                if (shorterCount[j] == 0) {
+                    bufferedWriter.write(j + " ");
+                    shorterCount[j] -= 1;
+                    numberToTaller.get(j).forEach(taller -> shorterCount[taller] -= 1);
                     break;
                 }
             }
         }
+
         bufferedWriter.close();
     }
 }
