@@ -7,7 +7,7 @@ using namespace std;
 
 int N, K, P, X;
 long long result = 0;
-vector<int> bin(10);
+vector<int> bin = { 0b1101111, 0b0100100, 0b1110011,0b1110110,0b0111100,0b1011110,0b1011111,0b1100100,0b1111111,0b1111110 };
 string xStr;
 
 void bt(string current, int remainP) {
@@ -32,17 +32,6 @@ int main() {
     cin.tie(nullptr);
 
     cin >> N >> K >> P >> X;
-
-    bin[0] = 0b1101111;
-    bin[1] = 0b0100100;
-    bin[2] = 0b1110011;
-    bin[3] = 0b1110110;
-    bin[4] = 0b0111100;
-    bin[5] = 0b1011110;
-    bin[6] = 0b1011111;
-    bin[7] = 0b1100100;
-    bin[8] = 0b1111111;
-    bin[9] = 0b1111110;
 
     xStr = to_string(X);
     int xLength = xStr.length();
