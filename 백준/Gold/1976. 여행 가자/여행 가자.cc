@@ -30,7 +30,6 @@ int main() {
 	for (int k = 0; k < N; k++) {
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				if (i == j || adj_list[i][j]) continue;
 				adj_list[i][j] = max(adj_list[i][j], adj_list[i][k] * adj_list[k][j]);
 			}
 		}
