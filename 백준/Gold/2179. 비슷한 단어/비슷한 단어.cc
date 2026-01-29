@@ -1,18 +1,32 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 #include <set>
-#include <map>
 #include <algorithm>
 using namespace std;
 
 int N;
-string word;
-map<string, set<string>> head_to_word;
-map<string, int> head_to_min_loc;
-map<string, int> word_to_loc;
-string max_head = "";
-int min_loc = 1e9 + 7;
+set<string> word;
+vector<pair<string, int>> word_loc;
+int max_prefix_count = 0;
+set<pair<string, int>> s;
+
+int get_prefix_count(string a, string b) {
+	int a_length = a.length();
+	int b_length = b.length();
+	int common_length = min(a_length, b_length);
+	int count = 0;
+	for (int i = 0; i < common_length; i++) {
+		if (a[i] == b[i]) {
+			count++;
+		}
+		else {
+			break;
+		}
+	}
+	return count;
+}
 
 int main() {
 	ios::sync_with_stdio(false);
@@ -20,42 +34,42 @@ int main() {
 
 	cin >> N;
 	for (int i = 0; i < N; i++) {
-		cin >> word;
-		word_to_loc[word] = i;
-		int length = word.length();
-		for (int j = 1; j <= length; j++) {
-			string head = word.substr(0, j);
-			head_to_word[head].insert(word);
-			if (head_to_min_loc.find(head) == head_to_min_loc.end()) {
-				head_to_min_loc[head] = 1e9 + 7;
-			}
-			head_to_min_loc[head] = min(head_to_min_loc[head], i);
-		}
+		string str;
+		cin >> str;
+		if (word.find(str) != word.end()) continue;
+		word.insert(str);
+		word_loc.push_back({ str, i });
 	}
 	
-	for (const pair <string, set<string>> &p : head_to_word) {
-		string head = p.first;
-		if (p.second.size() <= 1) {
-			continue;
+	sort(word_loc.begin(), word_loc.end());
+
+	for (int i = 0; i < N - 1; i++) {
+		int prefix_count = get_prefix_count(word_loc[i].first, word_loc[i + 1].first);
+		if (max_prefix_count < prefix_count) {
+			max_prefix_count = prefix_count;
+			s.clear();
+			s.insert(word_loc[i]);
+			s.insert(word_loc[i + 1]);
 		}
-		if (max_head.length() < head.length()) {
-			max_head = head;
-			min_loc = head_to_min_loc[head];
-		}
-		else if (max_head.length() == head.length() && min_loc > head_to_min_loc[head]) {
-			max_head = head;
-			min_loc = head_to_min_loc[head];
+		else if (max_prefix_count == prefix_count) {
+			s.insert(word_loc[i]);
+			s.insert(word_loc[i + 1]);
 		}
 	}
-	
-	vector<pair<string, int>> v;
-	for (string s : head_to_word[max_head]) {
-		v.push_back({ s, word_to_loc[s] });
+
+	vector<pair<int, string>> v;
+	for (auto p : s) {
+		v.push_back({ p.second, p.first });
 	}
-	sort(v.begin(), v.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
-		return a.second < b.second;
-	});
-	cout << v[0].first << "\n" << v[1].first << "\n";
+	sort(v.begin(), v.end());
+	cout << v[0].second << "\n";
+
+	for (int i = 1; i < v.size(); i++) {
+		if (v[0].second.substr(0, max_prefix_count) == v[i].second.substr(0, max_prefix_count)) {
+			cout << v[i].second << "\n";
+			break;
+		}
+	}
 
 	return 0;
 }
