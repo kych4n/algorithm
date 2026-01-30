@@ -1,76 +1,63 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <deque>
+#include <algorithm>
 using namespace std;
 
-int n, k, stage = 0, zero_count = 0;
+int N, K;
+deque<int> durability;
+deque<bool> is_on;
 
-int get_target(int idx) {
-	int temp = (idx - stage % (2 * n));
-	if (temp < 0) {
-		temp += 2 * n;
-	}
-	return temp;
-}
-
-int main(void) {
+int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
-	cin >> n >> k;
-	vector<int> remain_power(2 * n);
-	vector<bool> robot_located(n);
-	for (int i = 0; i < 2 * n; i++) {
-		cin >> remain_power[i];
+
+	cin >> N >> K;
+	for (int i = 0; i < 2 * N; i++) {
+		int d; cin >> d;
+		durability.push_back(d);
+		is_on.push_back(false);
 	}
 
+	int stage = 1;
+	int unavailable_count = 0;
+
 	while (true) {
-		stage += 1;
+		durability.push_front(durability.back());
+		durability.pop_back();
+		is_on.push_front(is_on.back());
+		is_on.pop_back();
 
-		// 1. 벨트 한 칸 이동
-		for (int j = n - 2; j > 0; j--) {
-			robot_located[j] = robot_located[j - 1];
-		}
-		robot_located[0] = false;
+		is_on[N - 1] = false;
 
-		// 2. 컨베이어 벨트 뒤에서부터 그 칸의 내구도 여부에 따라 옮기기
-		int target = get_target(n - 1);
-		if (robot_located[n - 2] && remain_power[target] > 0) {
-			robot_located[n - 2] = false;
-			remain_power[target] -= 1;
-			if (remain_power[target] == 0) {
-				zero_count += 1;
-			}
-		}
-		
-		for (int j = n - 3; j >= 0; j--) {
-			int target = get_target(j + 1);
-			if (robot_located[j] && !robot_located[j + 1] && remain_power[target] > 0) {
-				robot_located[j] = false;
-				robot_located[j + 1] = true;
-				remain_power[target] -= 1;
-				if (remain_power[target] == 0) {
-					zero_count += 1;
+		for (int i = N - 2; i >= 0; i--) {
+			if (is_on[i]) {
+				int next = i + 1;
+				if (!is_on[next] && durability[next] > 0) {
+					is_on[i] = false;
+					is_on[next] = true;
+					durability[next]--;
+					if (durability[next] == 0) {
+						unavailable_count++;
+					}
 				}
 			}
 		}
 
-		// 올리기
-		target = get_target(0);
-		if (!robot_located[0] && remain_power[target] > 0) {
-			robot_located[0] = true;
-			remain_power[target] -= 1;
-			if (remain_power[target] == 0) {
-				zero_count += 1;
+		is_on[N - 1] = false;
+
+		if (durability[0] > 0) {
+			is_on[0] = true;
+			durability[0]--;
+			if (durability[0] == 0) {
+				unavailable_count++;
 			}
 		}
 
-		if (zero_count >= k) {
-			break;
-		}
-
+		if (unavailable_count >= K) break;
+		stage++;
 	}
-
+	
 	cout << stage << "\n";
-
 	return 0;
 }
