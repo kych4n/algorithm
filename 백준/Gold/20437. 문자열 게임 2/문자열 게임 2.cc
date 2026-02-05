@@ -1,49 +1,48 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <map>
 #include <algorithm>
-#include <utility>
 using namespace std;
 
+int T, K;
 string W;
-int K, T;
-
-pair<int, int> game(string W, int K) {
-    vector<vector<int>> appearance_location(26);
-    for (int i = 0; i < W.length(); i++) {
-        appearance_location[(int)(W[i] - 'a')].push_back(i);
-    }
-    int game1_result = 1e9 + 7;
-    int game2_result = 0;
-    for (int i = 0; i < 26; i++) {
-        int size = appearance_location[i].size();
-        for (int j = 0; j <= size - K; j++) {
-            int length = appearance_location[i][j + K - 1] - appearance_location[i][j] + 1;
-            game1_result = min(game1_result, length);
-            game2_result = max(game2_result, length);
-        }
-    }
-    if (game1_result == 1e9 + 7) {
-        game1_result = -1;
-    }
-
-    if (game2_result == 0) {
-        game2_result = -1;
-    }
-    return make_pair(game1_result, game2_result);
-}
 
 int main() {
-    cin >> T;
-    for (int u = 0; u < T; u++) {
-        cin >> W >> K;
-        pair<int, int> result = game(W, K);
-        if (result.first == -1) {
-            cout << -1 << "\n";
-        }
-        else {
-            cout << result.first << " " << result.second << "\n";
-        }
-    }
-    return 0;
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> T;
+	for (int t = 0; t < T; t++) {
+		vector<vector<int>> alphabet_loc(26);
+
+		cin >> W >> K;
+		int length = W.length();
+		
+		for (int i = 0; i < length; i++) {
+			alphabet_loc[W[i]-'a'].push_back(i);
+		}
+
+		if (K == 1) {
+			cout << 1 << " " << 1 << "\n";
+			continue;
+		}
+		int three_length = 1e9 + 7;
+		int four_length = 0;
+
+		for (int i = 0; i < 26; i++) {
+			int count = alphabet_loc[i].size();
+			if (count < K || count <= 1) continue;
+			for (int j = 0; j < count - K + 1; j++) {
+				three_length = min(three_length, alphabet_loc[i][j + K - 1] - alphabet_loc[i][j] + 1);
+				four_length = max(four_length, alphabet_loc[i][j + K - 1] - alphabet_loc[i][j] + 1);
+			}
+		}
+		if (three_length == 1e9 + 7 && four_length == 0) {
+			cout << -1 << "\n";
+			continue;
+		}
+		cout << three_length << " " << four_length << "\n";
+	}
+
+	return 0;
 }
