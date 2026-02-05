@@ -22,16 +22,12 @@ int main() {
 			alphabet_loc[W[i]-'a'].push_back(i);
 		}
 
-		if (K == 1) {
-			cout << 1 << " " << 1 << "\n";
-			continue;
-		}
 		int three_length = 1e9 + 7;
 		int four_length = 0;
 
 		for (int i = 0; i < 26; i++) {
 			int count = alphabet_loc[i].size();
-			if (count < K || count <= 1) continue;
+			if (count < K) continue;
 			for (int j = 0; j < count - K + 1; j++) {
 				three_length = min(three_length, alphabet_loc[i][j + K - 1] - alphabet_loc[i][j] + 1);
 				four_length = max(four_length, alphabet_loc[i][j + K - 1] - alphabet_loc[i][j] + 1);
