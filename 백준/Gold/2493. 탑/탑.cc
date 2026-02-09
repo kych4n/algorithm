@@ -13,23 +13,16 @@ int main() {
     for (int i = 1; i <= N; i++) {
         int h;
         cin >> h;
+        while (!building.empty() && building.back().first < h) {
+            building.pop_back();
+        }
         if (building.empty()) {
             cout << 0 << " ";
-            building.push_back({h, i});
-            continue;
         }
         else {
-            while (!building.empty() && building.back().first < h) {
-                building.pop_back();
-            }
-            if (building.empty()) {
-                cout << 0 << " ";
-            }
-            else {
-                cout << building.back().second << " ";
-            }
-            building.push_back({ h, i });
+            cout << building.back().second << " ";
         }
+        building.push_back({ h, i });
     }
 
     return 0;
