@@ -5,42 +5,59 @@
 #include <algorithm>
 using namespace std;
 
-int N, K, P, X;
-long long result = 0;
-vector<int> bin = { 0b1101111, 0b0100100, 0b1110011,0b1110110,0b0111100,0b1011110,0b1011111,0b1100100,0b1111111,0b1111110 };
-string xStr;
+int N, K, P, X, result = 0;
+int target_digits[10];
+int flip_count[10][10];
+int bit[10] = {
+    0b1111110,
+    0b0110000,
+    0b1101101,
+    0b1111001,
+    0b0110011,
+    0b1011011,
+    0b1011111,
+    0b1110000,
+    0b1111111,
+    0b1111011
+};
 
-void bt(string current, int remainP) {
-    if (current.length() == K) {
-        int currentNumber = stoi(current);
-        if (currentNumber >= 1 && currentNumber <= N && currentNumber != X) {
-            result += 1;
+void flip(int cur_number, int cur_idx, int cur_p) {
+    if (cur_p > P) {
+        return;
+    }
+    if (cur_idx == K) {
+        if (cur_p >= 1 && cur_p <= P && cur_number >= 1 && cur_number <= N) {
+            result++;
         }
         return;
     }
-    int curNumber = xStr[current.length()] - '0';
-    for (int changeNumber = 0; changeNumber <= 9; changeNumber++) {
-        int needP = bitset<7>(bin[curNumber] ^ bin[changeNumber]).count();
-        if (remainP >= needP) {
-            bt(current + to_string(changeNumber), remainP - needP);
-        }
+
+    for (int after = 0; after <= 9; after++) {
+        int next_p = cur_p + flip_count[target_digits[cur_idx]][after];
+        flip(cur_number * 10 + after, cur_idx + 1, next_p);
     }
 }
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> N >> K >> P >> X;
-
-    xStr = to_string(X);
-    int xLength = xStr.length();
-    for (int i = 0; i < K - xLength; i++) {
-        xStr = "0" + xStr;
+    cin.tie(NULL);
+    
+    for (int i = 0; i <= 9; i++) {
+        for (int j = 0; j <= 9; j++) {
+            flip_count[i][j] = bitset<7>(bit[i] ^ bit[j]).count();
+        }
     }
 
-    bt("", P);
+    cin >> N >> K >> P >> X;
+    int temp_x = X;
+    for (int i = K - 1; i >= 0; i--) {
+        target_digits[i] = temp_x % 10;
+        temp_x /= 10;
+    }
+    
+    flip(0, 0, 0);
 
     cout << result << "\n";
+
     return 0;
 }
