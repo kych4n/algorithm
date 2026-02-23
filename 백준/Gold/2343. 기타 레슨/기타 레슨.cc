@@ -10,20 +10,20 @@ int main() {
     cin.tie(NULL);
 
     cin >> N >> M;
-    vector<long long> lecture(N);
-    long long left = 0, right = 0;
+    vector<int> lecture(N);
+    int left = 0, right = 0;
     for (int i = 0; i < N; i++) {
         cin >> lecture[i];
         left = max(left, lecture[i]);
         right += lecture[i];
     }
 
-    long long result = right;
+    int result = right;
 
     while (left <= right) {
-        long long mid = (left + right) / 2;
+        int mid = (left + right) / 2;
         int bluray_count = 1;
-        long long temp_sum = 0;
+        int temp_sum = 0;
 
         for (int i = 0; i < N; i++) {
             if (temp_sum + lecture[i] > mid) {
