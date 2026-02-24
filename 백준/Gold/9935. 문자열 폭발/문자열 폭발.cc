@@ -1,61 +1,46 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <queue>
 #include <algorithm>
 using namespace std;
 
-string original, boom;
-stack<pair<char, int>> s;
-vector<int> save(1000000, -1);
-int cur_idx = 0, temp_idx;
+string a, b;
 
-int main(void)
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);	
-	cin >> original >> boom;
-	int original_length = original.length();
-	int boom_length = boom.length();
-	for (int i = 0; i < original_length; i++) {
-		s.push({ original[i], i });
-		if (s.top().first == boom[cur_idx]) {
-			save[i] = cur_idx;
-			cur_idx += 1;
-			if (cur_idx == boom_length) {
-				for (int j = 0; j < boom_length; j++) {
-					s.pop();
-				}
-				if (s.empty()) {
-					cur_idx = 0;
-				}
-				else {
-					cur_idx = save[s.top().second] + 1;
-				}
-				
-			}
-		}
-		else {
-			cur_idx = 0;
-			if (s.top().first == boom[cur_idx]) {
-				save[i] = cur_idx;
-				cur_idx += 1;
-			}
-		}
-	}
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	string result = "";
+    cin >> a >> b;
+    int a_length = a.length();
+    int b_length = b.length();
+    string result = "";
 
-	if (s.empty()) {
-		cout << "FRULA" << "\n";
-		return 0;
-	}
+    for (int i = 0; i < a_length; i++) {
+        result.push_back(a[i]);
+        if (result.length() >= b_length) {
+            bool is_match = true;
+            for (int j = 0; j < b_length; j++) {
+                if (result[result.length() - 1 - j] != b[b_length - 1 - j]) {
+                    is_match = false;
+                    break;
+                }
+            }
 
-	while (!s.empty()) {
-		result += s.top().first;
-		s.pop();
-	}
-	reverse(result.begin(), result.end());
-	cout << result << "\n";
+            if (is_match) {
+                for (int j = 0; j < b_length; j++) {
+                    result.pop_back();
+                }
+            }
+        }
+    }
 
-	return 0;
+    if (result.empty()) {
+        cout << "FRULA\n";
+    }
+    else {
+        cout << result << "\n";
+    }
+    
+    return 0;
 }
