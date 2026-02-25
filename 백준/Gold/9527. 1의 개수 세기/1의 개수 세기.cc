@@ -3,32 +3,27 @@
 #include <algorithm>
 using namespace std;
 
-long long a, b;
-long long arr[55];
+typedef long long ll;
+ll power2[60];
 
-long long f(long long x) {
-	long long result = x & 1;
-	for (long long i = 54; i > 0; i--) {
-		if (x & (1LL << i)) {
-			result += arr[i - 1] + (x - (1LL << i) + 1);
-			x -= (1LL << i);
-		}
-	}
-	return result;
+ll f(ll n) {
+    if (n <= 0) return 0;
+    if (n <= 1) return 1;
+
+    ll k = 0;
+    while ((1LL << (k + 1) <= n)) k++;
+
+    ll result = (k * (1LL << (k - 1))) + (n - (1LL << k) + 1) + f(n - (1LL << k));
+    return result;
 }
 
-int main(void)
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-	cin >> a >> b;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	arr[0] = 1;
-	for (int i = 1; i < 55; i++) {
-		arr[i] = arr[i - 1] + (1LL << i) + arr[i - 1];
-	}
-
-	cout << f(b) - f(a - 1) << "\n";
-
-	return 0;
+    ll A, B;
+    cin >> A >> B;
+    
+    cout << f(B) - f(A - 1) << "\n";
+    return 0;
 }
