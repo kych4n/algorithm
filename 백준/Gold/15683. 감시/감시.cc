@@ -30,12 +30,22 @@ vector<vector<int>> get_direction_idx(int number) {
     else return { {0,1,2,3} };
 }
 
-void supervise(int cur_idx, vector<vector<int>> cur_office) {
+void watch(int r, int c, int dir, int val) {
+    while (true) {
+        r += direction[dir].first;
+        c += direction[dir].second;
+        if (!(r >= 0 && r < N && c >= 0 && c < M)) break;
+        if (office[r][c] == 6) break;
+        if (office[r][c] <= 0) office[r][c] += val;
+    }
+}
+
+void supervise(int cur_idx) {
     if (cur_idx == cctv.size()) {
         int temp_result = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                if (cur_office[i][j] == 0) {
+                if (office[i][j] == 0) {
                     temp_result += 1;
                 }
             }
@@ -45,22 +55,15 @@ void supervise(int cur_idx, vector<vector<int>> cur_office) {
     }
 
     CCTV cur_cctv = cctv[cur_idx];
-    vector<vector<int>> new_office;
     vector<vector<int>> direction_idx = get_direction_idx(cur_cctv.number);
     for (const vector<int>& dirs : direction_idx) {
-        new_office = cur_office;
         for (const int dir : dirs) {
-            int r = cur_cctv.r;
-            int c = cur_cctv.c;
-            while (true) {
-                r += direction[dir].first;
-                c += direction[dir].second;
-                if (!(r >= 0 && r < N && c >= 0 && c < M)) break;
-                if (new_office[r][c] == 6) break;
-                if (new_office[r][c] == 0) new_office[r][c] = -1;
-            }
+            watch(cur_cctv.r, cur_cctv.c, dir, -1);
         }
-        supervise(cur_idx + 1, new_office);
+        supervise(cur_idx + 1);
+        for (const int dir : dirs) {
+            watch(cur_cctv.r, cur_cctv.c, dir, 1);
+        }
     }
 }
 
@@ -78,7 +81,7 @@ int main() {
         }
     }
 
-    supervise(0, office);
+    supervise(0);
     cout << result << "\n";
 
     return 0;
