@@ -26,7 +26,7 @@ vector<vector<int>> get_directions(int type) {
 }
 
 // 특정 방향으로 감시 영역 표시 (# 대신 -1 사용)
-void watch(int r, int c, int dir, int tmp[8][8]) {
+void watch(int r, int c, int dir, int tmp[8][8], int val) {
     int nr = r, nc = c;
     while (true) {
         nr += dr[dir];
@@ -59,10 +59,13 @@ void solve(int idx, int cur_board[8][8]) {
                 next_board[i][j] = cur_board[i][j];
 
         // 해당 방향들 감시 표시
-        for (int d : dirs) watch(r, c, d, next_board);
+        for (int d : dirs) watch(r, c, d, next_board, -1);
 
         // 다음 CCTV로 진행
         solve(idx + 1, next_board);
+
+
+        for (int d : dirs) watch(r, c, d, next_board, 1);
     }
 }
 
