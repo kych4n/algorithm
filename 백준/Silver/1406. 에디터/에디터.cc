@@ -1,60 +1,53 @@
 #include <iostream>
 #include <vector>
-#include <stack>
 #include <algorithm>
 using namespace std;
 
-string str;
+/*
+    커서 근방에서 작업이 이루어짐 -> 스택
+    - L : 왼쪽의 마지막을 오른쪽 스택에 추가
+    - D : 오른쪽의 마지막을 왼쪽 스택에 추가
+    - B : 비어있지 않다면 왼쪽의 마지막을 삭제
+    - P : 왼쪽의 마지막에 추가
+*/
+
+string cursor_left, cursor_right = "";
 int N, M;
-stack<char> leftstack, rightstack;
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
-    cin >> str;
-    N = str.length();
-    for (int i = 0; i < N; i++) {
-        leftstack.push(str[i]);
-    }
+    cin >> cursor_left >> M;
+    N = cursor_left.length();
 
-    cin >> M;
-    for (int t = 0; t < M; t++) {
+    while (M--) {
         char cmd;
         cin >> cmd;
+
         if (cmd == 'L') {
-            if (!leftstack.empty()) {
-                rightstack.push(leftstack.top());
-                leftstack.pop();
-            }
+            if (cursor_left.empty()) continue;
+            cursor_right.push_back(cursor_left.back());
+            cursor_left.pop_back();
         }
         else if (cmd == 'D') {
-            if (!rightstack.empty()) {
-                leftstack.push(rightstack.top());
-                rightstack.pop();
-            }
+            if (cursor_right.empty()) continue;
+            cursor_left.push_back(cursor_right.back());
+            cursor_right.pop_back();
         }
         else if (cmd == 'B') {
-            if (!leftstack.empty()) {
-                leftstack.pop();
-            }
+            if (cursor_left.empty()) continue;
+            cursor_left.pop_back();
         }
         else if (cmd == 'P') {
             char c;
             cin >> c;
-            leftstack.push(c);
+            cursor_left.push_back(c);
         }
     }
 
-    while (!leftstack.empty()) {
-        rightstack.push(leftstack.top());
-        leftstack.pop();
-    }
-
-    while (!rightstack.empty()) {
-        cout << rightstack.top();
-        rightstack.pop();
-    }
+    reverse(cursor_right.begin(), cursor_right.end());
+    cout << cursor_left + cursor_right << "\n";
 
     return 0;
 }
