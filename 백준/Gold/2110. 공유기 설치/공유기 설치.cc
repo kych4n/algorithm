@@ -3,40 +3,46 @@
 #include <algorithm>
 using namespace std;
 
-int N, C, result = 0;
+/*
+    집에 공유기 C개를 설치하려고 한다. 
+    가장 인접한 두 공유기 사이의 거리의 최대
 
-int main() {
+    두 공유기 사이의 거리를 이분탐색하면서 
+*/
+
+int N, C;
+
+int main(void) {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
     cin >> N >> C;
-    vector<int> v(N);
+    vector<int> x(N);
     for (int i = 0; i < N; i++) {
-        cin >> v[i];
+        cin >> x[i];
     }
-    sort(v.begin(), v.end());
+    sort(x.begin(), x.end());
 
-    int lower_bound = 0;
-    int upper_bound = v.back() - v.front();
-    while (lower_bound <= upper_bound) {
-        int target_distance = (lower_bound + upper_bound) / 2;
-        int installed_count = 1;
-        int last_point = 0;
+    int left = 1, right = x.back() - x.front(), mid;
+    int install_count, last_install_point, result = 0;
+
+    while (left <= right) {
+        mid = (left + right) / 2;
+        install_count = 1, last_install_point = x.front();
         for (int i = 1; i < N; i++) {
-            if (v[i] - v[last_point] >= target_distance) {
-                installed_count++;
-                last_point = i;
+            if (last_install_point + mid <= x[i]) {
+                last_install_point = x[i];
+                install_count++;
             }
         }
-        if (installed_count >= C) {
-            result = max(result, target_distance);
-            lower_bound = target_distance + 1;
+        if (install_count >= C) {
+            result = max(result, mid);
+            left = mid + 1;
         }
-        else if (installed_count < C) {
-            upper_bound = target_distance - 1;
+        else {
+            right = mid - 1;
         }
     }
-
     cout << result << "\n";
 
     return 0;
