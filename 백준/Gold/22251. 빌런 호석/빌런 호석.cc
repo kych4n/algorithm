@@ -1,61 +1,60 @@
 #include <iostream>
 #include <vector>
 #include <bitset>
-#include <string>
 #include <algorithm>
 using namespace std;
 
-int N, K, P, X, result = 0;
-int target_digits[10];
-int flip_count[10][10];
-int bit[10] = {
-    0b1111110,
-    0b0110000,
-    0b1101101,
-    0b1111001,
-    0b0110011,
-    0b1011011,
-    0b1011111,
-    0b1110000,
-    0b1111111,
-    0b1111011
+/*
+    - 최소 1개, 최대 P개 반전
+    - 최종 결과는 1 이상 N 이하
+    - 수는 0으로 시작할 수 있음
+    - 현재 X층에 멈춰있음
+
+    [필요한 것]
+    - 반전해야할 개수
+    - 현재 수, 변경 시도할 자릿수, 현재 플롭카운트
+*/
+
+int plop[10][10];
+int digit[10] = {
+    0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011, 0b1011011, 0b1011111, 0b1110000, 0b1111111, 0b1111011
 };
 
-void flip(int cur_number, int cur_idx, int cur_p) {
-    if (cur_p > P) {
-        return;
-    }
-    if (cur_idx == K) {
-        if (cur_p >= 1 && cur_p <= P && cur_number >= 1 && cur_number <= N) {
+int N, K, P, X;
+int result = 0;
+
+void try_plop(int cur_number, int cur_digit, int cur_plop_count) {
+    if (cur_digit == K) {
+        if (cur_number >= 1 && cur_number <= N && cur_plop_count >= 1 && cur_plop_count <= P) {
             result++;
         }
         return;
     }
-
-    for (int after = 0; after <= 9; after++) {
-        int next_p = cur_p + flip_count[target_digits[cur_idx]][after];
-        flip(cur_number * 10 + after, cur_idx + 1, next_p);
+    int div = 1;
+    for (int i = 0; i < cur_digit; i++) div *= 10;
+    int target_digit_number = cur_number / div % 10;
+    for (int i = 0; i < 10; i++) {
+        if (cur_plop_count + plop[target_digit_number][i] <= P) {
+            try_plop(cur_number - target_digit_number * div + i * div, 
+                cur_digit + 1, 
+                cur_plop_count + plop[target_digit_number][i]);
+        }
     }
-}
+};
 
-int main() {
+int main(void) {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-    
-    for (int i = 0; i <= 9; i++) {
-        for (int j = 0; j <= 9; j++) {
-            flip_count[i][j] = bitset<7>(bit[i] ^ bit[j]).count();
+
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            plop[i][j] = bitset<7>(digit[i] ^ digit[j]).count();
         }
     }
 
     cin >> N >> K >> P >> X;
-    int temp_x = X;
-    for (int i = K - 1; i >= 0; i--) {
-        target_digits[i] = temp_x % 10;
-        temp_x /= 10;
-    }
-    
-    flip(0, 0, 0);
+
+    try_plop(X, 0, 0);
 
     cout << result << "\n";
 
