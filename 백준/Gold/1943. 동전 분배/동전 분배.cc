@@ -38,18 +38,24 @@ int main(void) {
         }
 
         int max_val = total / 2;
-        vector<bool> dp(max_val + 1);
-        dp[0] = true;
+        bitset<50001> dp;
+        dp[0] = 1;
 
         for (const Money& m : moneys) {
-            if (dp[max_val]) break;
-            for (int target = max_val; target >= m.v; target--) {
-                if (dp[target - m.v]) {
-                    for (int k = 0; k < m.c && target + k * m.v <= max_val; k++) {
-                        dp[target + k * m.v] = true;
-                    }
-                }
+            int value = m.v;
+            int count = m.c;
+
+            for (int k = 1; count > 0; k <<= 1) {
+                int num = min(k, count);
+                int move = value * num;
+
+                dp |= (dp << move);
+                count -= num;
+
+                if (dp[max_val]) break;
             }
+
+            if (dp[max_val]) break;
         }
 
         cout << (dp[max_val] ? 1 : 0) << "\n";
