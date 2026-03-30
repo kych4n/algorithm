@@ -29,41 +29,35 @@ void move(int dir, vector<vector<int>> board, int move_count) {
 
     int r, c;
     for (int i = 0; i < N; i++) {
+        vector<int> not_included_zero;
         for (int j = 0; j < N; j++) {
             if (dir == 0) { r = j; c = i; }
             else if (dir == 1) { r = N - 1 - j; c = i; }
             else if (dir == 2) { r = i; c = j; }
             else if (dir == 3) { r = i; c = N - 1 - j; }
 
-            if (board[r][c] == 0) continue;
-            if (s.empty()) {
-                s.push(board[r][c]);
+            if (board[r][c] != 0) not_included_zero.push_back(board[r][c]);
+        }
+
+        vector<int> merged;
+        for (int j = 0; j < not_included_zero.size(); j++) {
+            if (j + 1 < not_included_zero.size() && not_included_zero[j] == not_included_zero[j + 1]) {
+                merged.push_back(not_included_zero[j] * 2);
+                j++;
             }
             else {
-                if (s.top() == board[r][c]) {
-                    s.top() *= 2;
-                    s.push(-1);
-                }
-                else {
-                    s.push(board[r][c]);
-                }
+                merged.push_back(not_included_zero[j]);
             }
         }
-        while (!s.empty()) {
-            if (s.top() != -1) {
-                line_s.push(s.top());
-            }
-            s.pop();
-        }
+
         for (int j = 0; j < N; j++) {
             if (dir == 0) { r = j; c = i; }
             else if (dir == 1) { r = N - 1 - j; c = i; }
             else if (dir == 2) { r = i; c = j; }
             else if (dir == 3) { r = i; c = N - 1 - j; }
 
-            if (!line_s.empty()) {
-                board[r][c] = line_s.top();
-                line_s.pop();
+            if (j < merged.size()) {
+                board[r][c] = merged[j];
             }
             else {
                 board[r][c] = 0;
