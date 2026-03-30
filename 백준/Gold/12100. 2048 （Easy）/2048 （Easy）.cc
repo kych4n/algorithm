@@ -25,141 +25,48 @@ void move(int dir, vector<vector<int>> board, int move_count) {
     }
 
     stack<int> s;
-    stack<int> row_s;
-    // 상하좌우
-    if (dir == 0) {
+    stack<int> line_s;
+
+    int r, c;
+    for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            for (int i = 0; i < N; i++) {
-                if (board[i][j] == 0) continue;
-                if (s.empty()) {
-                    s.push(board[i][j]);
+            if (dir == 0) { r = j; c = i; }
+            else if (dir == 1) { r = N - 1 - j; c = i; }
+            else if (dir == 2) { r = i; c = j; }
+            else if (dir == 3) { r = i; c = N - 1 - j; }
+
+            if (board[r][c] == 0) continue;
+            if (s.empty()) {
+                s.push(board[r][c]);
+            }
+            else {
+                if (s.top() == board[r][c]) {
+                    s.top() *= 2;
+                    s.push(-1);
                 }
                 else {
-                    if (s.top() == board[i][j]) {
-                        s.top() *= 2;
-                        s.push(0);
-                    }
-                    else {
-                        s.push(board[i][j]);
-                    }
-                }
-            }
-            while (!s.empty()) {
-                if (s.top() != 0) {
-                    row_s.push(s.top());
-                }
-                s.pop();
-            }
-            for (int i = 0; i < N; i++) {
-                if (!row_s.empty()) {
-                    board[i][j] = row_s.top();
-                    row_s.pop();
-                }
-                else {
-                    board[i][j] = 0;
+                    s.push(board[r][c]);
                 }
             }
         }
-    }
-    else if (dir == 1) {
+        while (!s.empty()) {
+            if (s.top() != -1) {
+                line_s.push(s.top());
+            }
+            s.pop();
+        }
         for (int j = 0; j < N; j++) {
-            for (int i = N - 1; i >= 0; i--) {
-                if (board[i][j] == 0) continue;
-                if (s.empty()) {
-                    s.push(board[i][j]);
-                }
-                else {
-                    if (s.top() == board[i][j]) {
-                        s.top() *= 2;
-                        s.push(0);
-                    }
-                    else {
-                        s.push(board[i][j]);
-                    }
-                }
+            if (dir == 0) { r = j; c = i; }
+            else if (dir == 1) { r = N - 1 - j; c = i; }
+            else if (dir == 2) { r = i; c = j; }
+            else if (dir == 3) { r = i; c = N - 1 - j; }
+
+            if (!line_s.empty()) {
+                board[r][c] = line_s.top();
+                line_s.pop();
             }
-            while (!s.empty()) {
-                if (s.top() != 0) {
-                    row_s.push(s.top());
-                }
-                s.pop();
-            }
-            for (int i = N - 1; i >= 0; i--) {
-                if (!row_s.empty()) {
-                    board[i][j] = row_s.top();
-                    row_s.pop();
-                }
-                else {
-                    board[i][j] = 0;
-                }
-            }
-        }
-    }
-    else if (dir == 2) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (board[i][j] == 0) continue;
-                if (s.empty()) {
-                    s.push(board[i][j]);
-                }
-                else {
-                    if (s.top() == board[i][j]) {
-                        s.top() *= 2;
-                        s.push(0);
-                    }
-                    else {
-                        s.push(board[i][j]);
-                    }
-                }
-            }
-            while (!s.empty()) {
-                if (s.top() != 0) {
-                    row_s.push(s.top());
-                }
-                s.pop();
-            }
-            for (int j = 0; j < N; j++) {
-                if (!row_s.empty()) {
-                    board[i][j] = row_s.top();
-                    row_s.pop();
-                }
-                else {
-                    board[i][j] = 0;
-                }
-            }
-        }
-    }
-    else if (dir == 3) {
-        for (int i = 0; i < N; i++) {
-            for (int j = N - 1; j >= 0; j--) {
-                if (board[i][j] == 0) continue;
-                if (s.empty()) {
-                    s.push(board[i][j]);
-                }
-                else {
-                    if (s.top() == board[i][j]) {
-                        s.top() *= 2;
-                        s.push(0);
-                    }
-                    else {
-                        s.push(board[i][j]);
-                    }
-                }
-            }
-            while (!s.empty()) {
-                if (s.top() != 0) {
-                    row_s.push(s.top());
-                }
-                s.pop();
-            }
-            for (int j = N - 1; j >= 0; j--) {
-                if (!row_s.empty()) {
-                    board[i][j] = row_s.top();
-                    row_s.pop();
-                }
-                else {
-                    board[i][j] = 0;
-                }
+            else {
+                board[r][c] = 0;
             }
         }
     }
