@@ -11,34 +11,35 @@ using namespace std;
     - 어떤 추를 왼쪽, 오른쪽, 안씀
 */
 
-bool dp[31][15001];
-int N, M, weights[31];
+int N, M, chu, bead;
+const int delta = 15000;
 
 int main(void) {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
     cin >> N;
-    dp[0][0] = true;
+    vector<vector<bool>> dp(N + 1, vector<bool>(delta * 2 + 1));
+    dp[0][delta] = true;
     for (int i = 1; i <= N; i++) {
-        cin >> weights[i];
-        for (int j = 0; j <= 15000; j++) {
-            if (dp[i - 1][j]) {
-                if (j + weights[i] <= 15000) {
-                    dp[i][j + weights[i]] = true;
+        cin >> chu;
+        for (int j = -delta; j <= delta; j++) {
+            if (dp[i - 1][j + delta]) {
+                if (j - chu + delta >= 0) {
+                    dp[i][j - chu + delta] = true;
                 }
-                dp[i][abs(j - weights[i])] = true;
-                dp[i][j] = true;
+                if (j + chu + delta <= 2 * delta) {
+                    dp[i][j + chu + delta] = true;
+                }
+                dp[i][j + delta] = true;
             }
         }
     }
 
     cin >> M;
-    int target;
     for (int i = 0; i < M; i++) {
-        cin >> target;
-        if (target > 15000) cout << 'N' << " ";
-        else cout << (dp[N][target] ? 'Y' : 'N') << " ";
+        cin >> bead;
+        cout << (dp[N][bead + delta] ? 'Y' : 'N') << " ";
     }
 
     return 0;
