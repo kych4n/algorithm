@@ -1,56 +1,70 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <algorithm>
 using namespace std;
 
-long long n, m, a, b, c;
-vector<long long> dist(501, 1e9 + 7);
-vector<vector<int>> edges(6000, vector<int>(3));
+/*
+    [입력] A, B, C 노선이 주어짐, C는 음수일 수도, 0일 수도 있음
+    [출력] 1번 도시에서 출발해서 나머지 도시로 가는 가장 빠른 시간
+           - 1번 도시에서 출발해 어떤 도시로 가는 과정에서 시간을 무한히 오래 전으로 되돌릴 수 있다면 첫째 줄에 -1 
+           - 그렇지 않다면 N-1개 줄에 걸쳐 각 줄에 1번 도시에서 출발해 2번 도시, 3번 도시, ..., N번 도시로 가는 가장 빠른 시간을 순서대로 출력한다. 
+           - 만약 해당 도시로 가는 경로가 없다면 대신 -1을 출력한다.
 
-bool bf(int start) {
-	dist[start] = 0;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			int cur_node = edges[j][0];
-			int next_node = edges[j][1];
-			int cost = edges[j][2];
-			if (dist[cur_node] != 1e9+7 && dist[next_node] > dist[cur_node] + cost) {
-				dist[next_node] = dist[cur_node] + cost;
-				if (i == n - 1) {
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
+    경로의 비용이 0과 음수일 수 있다는 것이 문제 -> 벨만 포드
+*/
 
-int main(void)
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-	cin >> n >> m;
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < 3; j++) {
-			cin >> edges[i][j];
-		}
-	}
-	
-	bool result = bf(1);
-	if (result) {
-		cout << -1 << "\n";
-	}
-	else {
-		for (int i = 2; i <= n; i++) {
-			if (dist[i] == 1e9 + 7) {
-				cout << -1 << "\n";
-			}
-			else {
-				cout << dist[i] << "\n";
-			}
-		}
-	}
+struct Edge {
+    int start, end, cost;
+    Edge(int start, int end, int cost) {
+        this->start = start;
+        this->end = end;
+        this->cost = cost;
+    }
+};
 
-	return 0;
+int N, M, A, B, C;
+const int INF = 1e9 + 7;
+
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> N >> M;
+    vector<Edge> edges;
+    for (int i = 0; i < M; i++) {
+        cin >> A >> B >> C;
+        edges.push_back(Edge(A, B, C));
+    }
+
+    vector<long long> dist(N + 1, INF);
+    dist[1] = 0;
+
+    bool has_cycle = false;
+    for (int i = 1; i <= N; i++) {
+        for (const Edge& e : edges) {
+            if (dist[e.start] == INF) continue;
+            if (dist[e.end] > dist[e.start] + e.cost) {
+                dist[e.end] = dist[e.start] + e.cost;
+                if (i == N) {
+                    has_cycle = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (has_cycle) {
+        cout << -1 << "\n";
+        return 0;
+    }
+    for (int i = 2; i <= N; i++) {
+        if (dist[i] == INF) {
+            cout << -1 << "\n";
+        }
+        else {
+            cout << dist[i] << "\n";
+        }
+    }
+
+    return 0;
 }
