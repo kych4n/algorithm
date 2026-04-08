@@ -1,52 +1,60 @@
 #include <iostream>
 #include <vector>
+#include <map>
 #include <queue>
 #include <algorithm>
 using namespace std;
 
-int n, e, k, u, v, w, result = 0;
-vector<vector<pair<int, int>>> adj_list(20001);
-vector<int> dist(20001, 1e9 + 7);
-priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+/*
+    [입력] 노드 개수, 간선 개수, 시작 노드, 간선 정보
+    [출력] 시작 노드에서 다른 노드로 가는 최소 거리
+    간선의 가중치가 양수이므로 다익스트라
+*/
 
-void Dijkstra() {
-	dist[k] = 0;
-	pq.push({ 0, k });
-	while (!pq.empty()) {
-		int cur_cost = pq.top().first;
-		int cur_node = pq.top().second;
-		pq.pop();
-		for (int i = 0; i < adj_list[cur_node].size(); i++) {
-			int next_node = adj_list[cur_node][i].second;
-			int next_cost = cur_cost + adj_list[cur_node][i].first;
-			if (dist[next_node] > next_cost) {
-				dist[next_node] = next_cost;
-				pq.push({ next_cost, next_node });
-			}
-		}
-	}
-}
+const int INF = 1e9 + 7;
+int V, E, K;
+int u, v, w;
 
-int main(void)
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-	cin >> n >> e >> k;
-	for (int i = 0; i < e; i++) {
-		cin >> u >> v >> w;
-		adj_list[u].push_back({ w, v });
-	}
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	Dijkstra();
+    cin >> V >> E >> K;
+    vector<int> dist(V + 1, INF);
+    vector<vector<pair<int, int>>> edges(V + 1);
+    for (int i = 0; i < E; i++) {
+        cin >> u >> v >> w;
+        edges[u].push_back({ v, w });
+    }
 
-	for (int i = 1; i <= n; i++) {
-		if (dist[i] == 1e9 + 7) {
-			cout << "INF" << "\n";
-		}
-		else {
-			cout << dist[i] << "\n";
-		}
-	}
+    dist[K] = 0;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({ 0, K });
+    while (!pq.empty()) {
+        int cur_cost = pq.top().first;
+        int cur_node = pq.top().second;
+        pq.pop();
 
-	return 0;
+        if (dist[cur_node] < cur_cost) continue;
+
+        for (auto p : edges[cur_node]) {
+            int next_node = p.first;
+            int cost = p.second;
+            if (dist[next_node] > cur_cost + cost) {
+                dist[next_node] = cur_cost + cost;
+                pq.push({ dist[next_node], next_node });
+            }
+        }
+    }
+
+    for (int i = 1; i <= V; i++) {
+        if (dist[i] == INF) {
+            cout << "INF\n";
+        }
+        else {
+            cout << dist[i] << "\n";
+        }
+    }
+
+    return 0;
 }
