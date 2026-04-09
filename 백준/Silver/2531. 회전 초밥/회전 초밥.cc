@@ -23,7 +23,7 @@ int main(void) {
     for (int i = 0; i < N; i++) {
         cin >> sushi[i];
     }
-    for (int i = 0; i < N + k; i++) {
+    for (int i = 0; i < N + k - 1; i++) {
         if (i >= k) {
             count[sushi[(i - k) % N]]--;
             if (count[sushi[(i - k) % N]] == 0) {
