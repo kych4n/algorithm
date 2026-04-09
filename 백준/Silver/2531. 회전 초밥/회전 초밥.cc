@@ -36,7 +36,7 @@ int main(void) {
         }
         
         int temp_result = cur_d;
-        if (i >= k && count[c] == 0) {
+        if (i >= k - 1 && count[c] == 0) {
             temp_result += 1;
         }
         result = max(result, temp_result);
