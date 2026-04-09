@@ -1,44 +1,48 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <algorithm>
 using namespace std;
 
-int n, d, k, c, result = 0, not_duplicated_count = 0;
-vector<int> current_count(3001);
+/*
+    서로 다른 K개의 초밥을 먹으면 쿠폰에 적힌 번호의 초밥을 줌
+    먹을 수 있는 초밥 가짓수의 최댓값을 구해야 하는데, K개의 초밥과 쿠폰에 적힌 번호의 초밥이 안겹치면 좋음
+    종류 당 개수를 기억하는 것이 필요, 종류의 수를 추적 - 종류 당 개수가 0이 되면 -1, 1 이상이 되면 +1
+*/
+
+int N, d, k, c;
+int result = 0;
 
 int main(void) {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cin >> n >> d >> k >> c;
-	vector<int> sushi(n);
-	for (int i = 0; i < n; i++) {
-		cin >> sushi[i];
-	}
-	queue<int> sequence;
-	for (int i = 0; i < n + k; i++) {
-		int target_number = sushi[i % n];
-		if (sequence.size() < k) {
-			if (current_count[target_number] == 0) {
-				not_duplicated_count += 1;
-			}
-			sequence.push(target_number);
-			current_count[target_number] += 1;
-		}
-		if (sequence.size() == k) {
-			if (current_count[c] == 0) {
-				result = max(result, not_duplicated_count + 1);
-			}
-			else {
-				result = max(result, not_duplicated_count);
-			}
-			current_count[sequence.front()] -= 1;
-			if (current_count[sequence.front()] == 0) {
-				not_duplicated_count -= 1;
-			}
-			sequence.pop();
-		}
-	}
-	cout << result << "\n";
-	return 0;
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> N >> d >> k >> c;
+    vector<int> sushi(N);
+    vector<int> count(d + 1);
+    int cur_d = 0;
+    for (int i = 0; i < N; i++) {
+        cin >> sushi[i];
+    }
+    for (int i = 0; i < N + k; i++) {
+        if (i >= k) {
+            count[sushi[(i - k) % N]]--;
+            if (count[sushi[(i - k) % N]] == 0) {
+                cur_d--;
+            }
+        }
+        count[sushi[i % N]]++;
+        if (count[sushi[i % N]] == 1) {
+            cur_d++;
+        }
+        
+        int temp_result = cur_d;
+        if (i >= k && count[c] == 0) {
+            temp_result += 1;
+        }
+        result = max(result, temp_result);
+    }
+   
+    cout << result << "\n";
+
+    return 0;
 }
