@@ -2,47 +2,64 @@
 #include <vector>
 #include <queue>
 #include <algorithm>
-#include <cmath>
-using namespace std;	
-int n, k, sec=0;
-vector<int> visited(100001, 1e9+7);
+using namespace std;
 
-int main() {
-	cin.tie(NULL);
-	ios_base::sync_with_stdio(false);
-	cin >> n >> k;
-	if (n==k){
-		cout << 0 << "\n";
-		return 0;
-	}		
-	queue<int> q;
-	q.push(n);
-	while (!q.empty()){
-		sec+=1;
-		int size = q.size();
-		for (int i=0; i<size; i++){
-			int x = q.front();
-			q.pop();
-			if (x+1 <= 100000){
-				if (visited[x+1] > sec){
-					visited[x+1] = sec;
-					q.push(x+1);
-				}
-			} 
-			if (x-1 >= 0){
-				if (visited[x-1] > sec){
-					visited[x-1] = sec;
-					q.push(x-1);
-				}
-			} 
-			if (x*2 <= 100000){
-				if (visited[x*2] > sec){
-					visited[x*2] = sec;
-					q.push(x*2);
-				}
-			} 
-		}
-	}
-	cout << visited[k] << "\n";
-	return 0;
+/*
+    [입력] A의 위치, B의 위치
+    [출력] A가 B에 도달하는 데 걸리는 시간
+
+    - X+1, X-1, 2X
+    - 시간 증가시키면서 위치 변화시키기
+*/
+
+int N, K;
+const int MAX = 100000;
+
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> N >> K;
+
+    if (N > K) {
+        cout << N - K << "\n";
+        return 0;
+    }
+
+    vector<int> min_cost(MAX + 1, MAX);
+
+    int cur_time = 0;
+    queue<int > q;
+    q.push(N);
+    min_cost[N] = 0;
+
+    while (true) {
+        cur_time++;
+
+        int cur_size = q.size();
+        for (int i = 0; i < cur_size; i++) {
+            int cur_loc = q.front();
+            q.pop();
+
+            if (cur_loc + 1 <= MAX && min_cost[cur_loc + 1] > cur_time) {
+                min_cost[cur_loc + 1] = cur_time;
+                q.push(cur_loc + 1);
+            }
+            if (cur_loc - 1 >= 0 && min_cost[cur_loc - 1] > cur_time) {
+                min_cost[cur_loc - 1] = cur_time;
+                q.push(cur_loc - 1);
+            }
+            if (cur_loc * 2 <= MAX && min_cost[cur_loc * 2] > cur_time) {
+                min_cost[cur_loc * 2] = cur_time;
+                q.push(cur_loc * 2);
+            }
+
+            if (min_cost[K] != MAX) {
+                cout << min_cost[K] << "\n";
+                return 0;
+            }
+        }
+    }
+
+    return 0;
 }
