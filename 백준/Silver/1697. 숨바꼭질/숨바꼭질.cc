@@ -26,7 +26,7 @@ int main(void) {
         return 0;
     }
 
-    vector<int> min_cost(MAX + 1, MAX);
+    vector<int> min_cost(MAX + 1, 1e9 + 7);
 
     int cur_time = 0;
     queue<int > q;
@@ -54,7 +54,7 @@ int main(void) {
                 q.push(cur_loc * 2);
             }
 
-            if (min_cost[K] != MAX) {
+            if (min_cost[K] != 1e9 + 7) {
                 cout << min_cost[K] << "\n";
                 return 0;
             }
