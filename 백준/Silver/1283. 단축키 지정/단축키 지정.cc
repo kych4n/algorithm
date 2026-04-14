@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cctype>
 #include <algorithm>
 using namespace std;
 
@@ -58,10 +59,7 @@ int main(void) {
                     continue;
                 }
 
-                int idx;
-                if (isupper(str[j])) idx = str[j] - 'A';
-                else idx = str[j] - 'a';
-
+                int idx = tolower(str[j]) - 'a';
                 if (!visited[idx]) {
                     visited[idx] = true;
                     where = j;
