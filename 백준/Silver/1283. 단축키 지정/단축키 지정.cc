@@ -1,76 +1,86 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
+#include <algorithm>
 using namespace std;
 
-int n;
-string str;
-vector<bool> already(26);
-vector<int> assigned(30, -1);
-vector<string> save_str;
+/*
+    [입력] 문자열
+    [출력] 단축키 지정된 문자열
 
-vector<string> split(string str, char delimeter) {
-	istringstream iss(str);
-	string buffer;
-	vector<string> result;
-	while (getline(iss, buffer, delimeter)) {
-		for (int i = 0; i < buffer.length(); i++) {
-			buffer[i] = tolower(buffer[i]);
-		}
-		result.push_back(buffer);
-	}
-	return result;
-}
+    - 어떤 알파벳이 이미 지정되어 있는가
+    - 그 문자열에서는 몇 번째가 단축키인가
+*/
+
+int N;
+vector<bool> visited(26);
+string str;
 
 int main(void) {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cin >> n;
-	cin.ignore();
-	for (int i = 0; i < n; i++) {
-		getline(cin, str);
-		save_str.push_back(str);
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
 
-		bool isAssigned = false;
+    cin >> N;
+    cin.ignore();
+    for (int i = 0; i < N; i++) {
+        getline(cin, str);
 
-		// 단어의 첫번째 단축키 지정 확인
-		int idx = 0;
-		vector<string> firsts = split(str, ' ');
-		for (int j = 0; j < firsts.size(); j++) {
-			char first_word = firsts[j][0];
-			if (!already[first_word - 'a']) {
-				already[first_word - 'a'] = true;
-				assigned[i] = idx;
-				isAssigned = true;
-				break;
-			}
-			idx += firsts[j].length();
-			idx += 1;
-		}
+        int M = str.length();
+        bool is_done = false;
+        int where = 1e9 + 7;
 
-		if (isAssigned) continue;
+        // #1
+        bool word_first = true;
+        for (int j = 0; j < M; j++) {
+            if (str[j] == ' ') {
+                word_first = true;
+                continue;
+            }
 
-		// 전체 확인
-		for (int j = 0; j < str.length(); j++) {
-			if (isalpha(str[j]) && !already[tolower(str[j]) - 'a']) {
-				already[tolower(str[j]) - 'a'] = true;
-				assigned[i] = j;
-				break;
-			}
-		}
-	}
+            int idx;
+            if (isupper(str[j])) idx = str[j] - 'A';
+            else idx = str[j] - 'a';
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < save_str[i].length(); j++) {
-			if (assigned[i] == j) {
-				cout << "[" << save_str[i][j] << "]";
-			}
-			else {
-				cout << save_str[i][j];
-			}
-		}
-		cout << "\n";
-	}
-	return 0;
+            if (word_first && !visited[idx]) {
+                visited[idx] = true;
+                where = j;
+                is_done = true;
+                break;
+            }
+
+            word_first = false;
+        }
+
+        // #2
+        if (!is_done) {
+            for (int j = 0; j < M; j++) {
+                if (str[j] == ' ') {
+                    continue;
+                }
+
+                int idx;
+                if (isupper(str[j])) idx = str[j] - 'A';
+                else idx = str[j] - 'a';
+
+                if (!visited[idx]) {
+                    visited[idx] = true;
+                    where = j;
+                    break;
+                }
+            }
+        }
+        
+        for (int j = 0; j < M; j++) {
+            if (where == j) {
+                cout << '[';
+            }
+            cout << str[j];
+            if (where == j) {
+                cout << ']';
+            }
+        }
+        cout << "\n";
+    }
+
+    return 0;
 }
