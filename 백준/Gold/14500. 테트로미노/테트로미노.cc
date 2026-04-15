@@ -16,12 +16,15 @@ using namespace std;
 int N, M;
 int paper[500][500];
 bool visited[500][500];
+int max_val = 0;
 int result = 0;
 
 int dr[] = { -1,1,0,0 };
 int dc[] = { 0,0,-1,1 };
 
 void bt(int x, int y, int count, int sum) {
+    if (sum + (4 - count) * max_val <= result) return;
+
     if (count == 4) {
         result = max(result, sum);
         return;
@@ -38,17 +41,23 @@ void bt(int x, int y, int count, int sum) {
 }
 
 void fxxx(int x, int y) {
-    vector<bool> possible(4, true);
     for (int i = 0; i < 4; i++) {
-        int new_x = x + dr[i];
-        int new_y = y + dc[i];
-        if (!(new_x >= 0 && new_x < N && new_y >= 0 && new_y < M)) possible[i] = false;
+        int temp_sum = paper[x][y];
+        bool possible = true;
+        for (int j = 0; j < 4; j++) {
+            if (i == j) continue;
+            int new_x = x + dr[j];
+            int new_y = y + dc[j];
+            if (new_x >= 0 && new_x < N && new_y >= 0 && new_y < M) {
+                temp_sum += paper[new_x][new_y];
+            }
+            else {
+                possible = false;
+                break;
+            }
+        }
+        if (possible) result = max(result, temp_sum);
     }
-
-    if (possible[0] && possible[1] && possible[2]) result = max(result, paper[x][y] + paper[x + dr[0]][y + dc[0]] + paper[x + dr[1]][y + dc[1]] + paper[x + dr[2]][y + dc[2]]);
-    if (possible[0] && possible[1] && possible[3]) result = max(result, paper[x][y] + paper[x + dr[0]][y + dc[0]] + paper[x + dr[1]][y + dc[1]] + paper[x + dr[3]][y + dc[3]]);
-    if (possible[0] && possible[2] && possible[3]) result = max(result, paper[x][y] + paper[x + dr[0]][y + dc[0]] + paper[x + dr[3]][y + dc[3]] + paper[x + dr[2]][y + dc[2]]);
-    if (possible[1] && possible[2] && possible[3]) result = max(result, paper[x][y] + paper[x + dr[3]][y + dc[3]] + paper[x + dr[1]][y + dc[1]] + paper[x + dr[2]][y + dc[2]]);
 }
 
 int main(void) {
@@ -59,6 +68,7 @@ int main(void) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
             cin >> paper[i][j];
+            max_val = max(max_val, paper[i][j]);
             visited[i][j] = false;
         }
     }
